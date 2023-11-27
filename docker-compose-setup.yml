@@ -1,0 +1,56 @@
+# MediaWiki with MariaDB
+#
+# Access via "http://localhost:8080"
+#   (or "http://$(docker-machine ip):8080" if using docker-machine)
+#
+# Note:  DB password is set in .env
+#
+
+version: '3'
+
+services:
+
+  mediawiki:
+    image: mediawiki
+    container_name:  mw-mediawiki
+    restart: always
+    ports:
+      - 127.0.0.1:${MW_PORT}:80
+    links:
+      - database
+    volumes:
+      # After initial setup, download LocalSettings.php to the same directory as
+      # this yaml and uncomment the following line and use compose to restart
+      # the mediawiki service
+      # - ./LocalSettings.php:/var/www/html/LocalSettings.php
+      - ./data/mw-images:/var/www/html/images
+      - ./data/mw-bak:/bak
+      - ./data/mw-root:/root
+    networks:
+      - mw-network
+
+  # This key also defines the name of the database host used during setup instead of the default "localhost"
+
+  database:
+    image: mariadb
+    container_name:  mw-database
+    restart: always
+    environment:
+      # @see https://phabricator.wikimedia.org/source/mediawiki/browse/master/includes/DefaultSettings.php
+      MYSQL_DATABASE: mw_local
+      MYSQL_USER: root
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      # MYSQL_RANDOM_ROOT_PASSWORD: 'no'
+    volumes:
+      - ./data/db-mysql:/var/lib/mysql
+      - ./data/db-bak:/bak
+      - ./data/db-root:/root
+    networks:
+      - mw-network
+
+networks:
+  mw-network:
+    name: ${DOCKER_NETWORK}
+    external: true
+

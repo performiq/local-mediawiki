@@ -1,3 +1,31 @@
+
+# IDEs
+.vscode/
+.idea/
+
+# Archives
+*.7z
+*.bzip
+*.gz
+*.rar
+*.tar
+*.tz
+*.zip
+
+# macOS
+.DS_Store
+
+# Local DB, backup data and MediaWiki images - manage these locally
+data/db-bak
+data/db-mysql
+data/mw-images
+data/mw-bak
+
+# Mediawiki
+LocalSettings.php
+
+# ----- Python -----
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
